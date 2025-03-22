@@ -1,0 +1,30 @@
+﻿@model IEnumerable<S2_CA2.Models.Review>
+
+@{
+    ViewData["Title"] = "Reviews";
+}
+
+<h2>Reviews</h2>
+<a asp-action="Create" class="btn btn-primary">Write a Review</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Book</th>
+            <th>Content</th>
+            <th>Rating</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model)
+        {
+            <tr>
+                <td>@review.BookId</td>
+                <td>@review.Content</td>
+                <td>@review.Rating</td>
+                <td>@review.CreatedAt.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>

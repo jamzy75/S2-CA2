@@ -1,0 +1,35 @@
+﻿@model IEnumerable<S2_CA2.Models.Book>
+
+@{
+    ViewData["Title"] = "Manage Books";
+}
+
+<h2>Books List</h2>
+<a asp-action="Create" class="btn btn-primary">Add New Book</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>ISBN</th>
+            <th>Published Date</th>
+            <th>Genre</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var book in Model)
+        {
+            <tr>
+                <td>@book.Title</td>
+                <td>@book.ISBN</td>
+                <td>@book.PublishedDate.ToShortDateString()</td>
+                <td>@book.Genre</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@book.Id" class="btn btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@book.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
