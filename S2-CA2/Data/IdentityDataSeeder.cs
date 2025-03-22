@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using S2_CA2.Models;
 
 namespace S2_CA2.Data
 {
     public static class IdentityDataSeeder
     {
-        public static async Task SeedRolesAndAdminAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task SeedRolesAndAdminAsync(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             string[] roleNames = { "Admin", "User" };
 
@@ -22,7 +21,7 @@ namespace S2_CA2.Data
 
             if (await userManager.FindByEmailAsync(adminEmail) == null)
             {
-                var adminUser = new ApplicationUser { UserName = adminEmail, Email = adminEmail, Role = "Admin" };
+                var adminUser = new IdentityUser { UserName = adminEmail, Email = adminEmail };
                 var result = await userManager.CreateAsync(adminUser, adminPassword);
                 if (result.Succeeded)
                 {

@@ -5,7 +5,7 @@ using S2_CA2.Models;
 
 namespace S2_CA2.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -13,9 +13,5 @@ namespace S2_CA2.Data
         public DbSet<Author> Authors { get; set; }
         public DbSet<Review> Reviews { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder); // Ensures Identity tables are configured
-        }
     }
 }
