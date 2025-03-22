@@ -8,12 +8,15 @@ namespace S2_CA2.Models
         public int Id { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        [StringLength(30)]
+        public string Name { get; set; } = null!;
 
-        public string Bio { get; set; }
+        [StringLength(1000)]
+        public string? Bio { get; set; }
 
+        [Required]
         public DateTime Birthdate { get; set; }
 
-        public List<Book> Books { get; set; } = new List<Book>();
+        public virtual List<Book> Books { get; set; } = [];
     }
 }
