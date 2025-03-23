@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using S2_CA2.Data;
 using S2_CA2.Models;
 using S2_CA2.Models.ViewModels;
@@ -11,14 +12,20 @@ namespace S2_CA2.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public BooksController(ApplicationDbContext context)
+        private readonly ILogger<BooksController> _logger;
+
+        public BooksController(ApplicationDbContext context, ILogger<BooksController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public IActionResult Index()
         {
-            var books = _context.Books.ToList();
+            var books = _context.Books
+                .AsNoTracking()
+                .Include(b => b.Author)
+                .ToList();
             return View(books);
         }
 
@@ -47,7 +54,6 @@ namespace S2_CA2.Controllers
             });
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-
         }
 
         public IActionResult Edit(int id)
@@ -68,6 +74,7 @@ namespace S2_CA2.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(book);
         }
 
@@ -87,6 +94,7 @@ namespace S2_CA2.Controllers
                 _context.Books.Remove(book);
                 await _context.SaveChangesAsync();
             }
+
             return RedirectToAction(nameof(Index));
         }
     }
