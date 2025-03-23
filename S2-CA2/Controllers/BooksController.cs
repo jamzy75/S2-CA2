@@ -12,12 +12,9 @@ namespace S2_CA2.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        private readonly ILogger<BooksController> _logger;
-
-        public BooksController(ApplicationDbContext context, ILogger<BooksController> logger)
+        public BooksController(ApplicationDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         public IActionResult Index()
