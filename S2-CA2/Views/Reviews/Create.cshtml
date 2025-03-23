@@ -6,17 +6,21 @@
 
 <h2>Write a Review</h2>
 <form asp-action="Create" method="post">
+    @Html.ValidationSummary(true)
     <div class="form-group">
         <label>Book ID</label>
-        <input asp-for="Book" class="form-control" required />
+        <input asp-for="Book" class="form-control" required/>
+        @Html.ValidationMessageFor(r => r.Book)
     </div>
     <div class="form-group">
         <label>Review</label>
         <textarea asp-for="Content" class="form-control" required></textarea>
+        @Html.ValidationMessageFor(r => r.Content)
     </div>
     <div class="form-group">
         <label>Rating (1-5)</label>
-        <input asp-for="Rating" type="number" min="1" max="5" class="form-control" required />
+        <input asp-for="Rating" type="number" min="1" max="5" class="form-control" required/>
+        @Html.ValidationMessageFor(r => r.Rating)
     </div>
     <button type="submit" class="btn btn-success">Submit Review</button>
 </form>
