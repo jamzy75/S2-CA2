@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using S2_CA2.Data;
 using S2_CA2.Models;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace S2_CA2.Controllers
 
         public IActionResult Index()
         {
-            var reviews = _context.Reviews.ToList();
+            var reviews = _context.Reviews.Include(r => r.Book).ToList();
             return View(reviews);
         }
 
