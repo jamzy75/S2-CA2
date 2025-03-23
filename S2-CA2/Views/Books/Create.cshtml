@@ -16,7 +16,7 @@
         <label asp-for="AuthorId">Author</label>
         @Html.DropDownListFor(
             m => m.AuthorId,
-            new SelectList(DbContext.Authors.ToList(), nameof(Author.Id), nameof(Author.Name)),
+            Model.AuthorsList,
             null,
             new { @class = "form-select" }
         )
