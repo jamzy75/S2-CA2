@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using S2_CA2.Data;
 using S2_CA2.Models;
-using System.Linq;
-using System.Threading.Tasks;
+using S2_CA2.Models.ViewModels;
 
 namespace S2_CA2.Controllers
 {
@@ -27,15 +26,28 @@ namespace S2_CA2.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Book book)
+        public async Task<IActionResult> Create(CreateBookVM book)
         {
-            if (ModelState.IsValid)
+            var author = await _context.Authors.FirstOrDefaultAsync(a => a.Id == book.AuthorId);
+            if (author == null)
             {
-                _context.Books.Add(book);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError(nameof(CreateBookVM.AuthorId), "Author not found");
+                return View(book);
             }
-            return View(book);
+
+            if (!ModelState.IsValid) return View(book);
+
+            _context.Books.Add(new Book
+            {
+                Author = author,
+                Title = book.Title,
+                Isbn = book.Isbn,
+                Genre = book.Genre,
+                PublishedDate = book.PublishedDate,
+            });
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+
         }
 
         public IActionResult Edit(int id)
