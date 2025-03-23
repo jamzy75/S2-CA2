@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>S2_CA2</RootNamespace>
+    <UserSecretsId>c5a58847-dab9-40cf-ab7d-f7b8c19bd5f1</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
