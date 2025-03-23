@@ -17,6 +17,15 @@ namespace S2_CA2.Controllers
             _context = context;
         }
 
+        private async Task<SelectList> GetAuthorsAsSelectList() => new(
+            await _context.Authors
+                .AsNoTracking()
+                .ToListAsync(),
+            nameof(Author.Id),
+            nameof(Author.Name)
+        );
+
+
         public IActionResult Index()
         {
             var books = _context.Books
