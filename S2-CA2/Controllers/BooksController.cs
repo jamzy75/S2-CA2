@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using S2_CA2.Data;
 using S2_CA2.Models;
@@ -35,20 +37,28 @@ namespace S2_CA2.Controllers
             return View(books);
         }
 
-        public IActionResult Create() => View();
+        public async Task<IActionResult> Create()
+        {
+            var model = new BookVM { AuthorsList = await GetAuthorsAsSelectList() };
+            return View(model);
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateBookVM book)
+        public async Task<IActionResult> Create(BookVM book)
         {
-            var author = await _context.Authors.FirstOrDefaultAsync(a => a.Id == book.AuthorId);
+            book.AuthorsList = await GetAuthorsAsSelectList();
+            var author = await _context.Authors.FindAsync(book.AuthorId);
             if (author == null)
             {
-                ModelState.AddModelError(nameof(CreateBookVM.AuthorId), "Author not found");
+                ModelState.AddModelError(nameof(BookVM.AuthorId), "Author not found");
                 return View(book);
             }
 
-            if (!ModelState.IsValid) return View(book);
+            var ctx = new ValidationContext(book);
+            var validationResults = new List<ValidationResult>();
+
+            if (Validator.TryValidateObject(book, ctx, validationResults)) return View(book);
 
             _context.Books.Add(new Book
             {
@@ -62,24 +72,52 @@ namespace S2_CA2.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var book = _context.Books.Find(id);
-            return book == null ? NotFound() : View(book);
+            var book = await _context.Books
+                .Include(b => b.Author)
+                .FirstOrDefaultAsync(b => b.Id == id);
+
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            var model = new BookVM(book, await GetAuthorsAsSelectList());
+
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Book book)
+        public async Task<IActionResult> Edit(int id, BookVM book)
         {
             if (id != book.Id) return NotFound();
 
-            if (ModelState.IsValid)
+            Book newBookData = book;
+            var author = await _context.Authors.FindAsync(book.AuthorId);
+
+            if (author == null)
+            {
+                ModelState.AddModelError(nameof(BookVM.AuthorId), "Author not found");
+                return View(book);
+            }
+
+            book.Author = author;
+            newBookData.Author = author;
+
+            var ctx = new ValidationContext(book);
+            var validationResults = new List<ValidationResult>();
+
+
+            if (Validator.TryValidateObject(book, ctx, validationResults))
             {
                 _context.Update(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            book.AuthorsList = await GetAuthorsAsSelectList();
 
             return View(book);
         }
@@ -94,7 +132,7 @@ namespace S2_CA2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var book = _context.Books.Find(id);
+            var book = await _context.Books.FindAsync(id);
             if (book != null)
             {
                 _context.Books.Remove(book);
