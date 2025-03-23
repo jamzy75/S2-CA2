@@ -1,5 +1,3 @@
-using Google.Apis.Auth.AspNetCore3;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using S2_CA2.Data;
@@ -10,16 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Configure MySQL with Entity Framework Core
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                        ?? throw new InvalidOperationException("Could not get 'DefaultConnection' connection string");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseMySQL(connectionString);
-});
+builder.Services.AddDbContext<ApplicationDbContext>(options => { options.UseMySQL(connectionString); });
 
 // Configure Identity
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
-    {
-        options.SignIn.RequireConfirmedAccount = false;
-    })
+builder.Services.AddDefaultIdentity<IdentityUser>(options => { options.SignIn.RequireConfirmedAccount = false; })
     .AddRoles<IdentityRole>()
     .AddDefaultUI()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -32,13 +24,7 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 });
 
 // ✅ Unified Authentication Setup (Cookie + Google)
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultChallengeScheme = GoogleOpenIdConnectDefaults.AuthenticationScheme;
-        options.DefaultForbidScheme = GoogleOpenIdConnectDefaults.AuthenticationScheme;
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    })
-    .AddCookie() // Handles session cookies
+builder.Services.AddAuthentication()
     .AddGoogle(options =>
     {
         options.ClientId = builder.Configuration["Authentication:Google:ClientId"]
@@ -61,6 +47,10 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
+}
+else
+{
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
