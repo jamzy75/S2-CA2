@@ -11,6 +11,7 @@
     <thead>
         <tr>
             <th>Title</th>
+            <th>Author</th>
             <th>ISBN</th>
             <th>Published Date</th>
             <th>Genre</th>
@@ -22,6 +23,7 @@
         {
             <tr>
                 <td>@book.Title</td>
+                <td>@book.Author.Name</td>
                 <td>@book.Isbn</td>
                 <td>@book.PublishedDate.ToShortDateString()</td>
                 <td>@book.Genre</td>
