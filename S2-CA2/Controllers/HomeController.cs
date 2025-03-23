@@ -1,20 +1,18 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using S2_CA2.Models;
 
 namespace S2_CA2.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(SignInManager<IdentityUser> signInManager) : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+        private readonly SignInManager<IdentityUser> _signInManager = signInManager;
 
         public IActionResult Index()
         {
+            if (_signInManager.IsSignedIn(User)) return RedirectToAction("Index", "Books");
+
             return View();
         }
 
