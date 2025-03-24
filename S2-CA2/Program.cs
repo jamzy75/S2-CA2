@@ -23,7 +23,6 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     options.MinimumSameSitePolicy = SameSiteMode.Lax; // Prevents OAuth errors
 });
 
-// ✅ Unified Authentication Setup (Cookie + Google)
 builder.Services.AddAuthentication()
     .AddGoogle(options =>
     {
@@ -38,6 +37,13 @@ builder.Services.AddAuthentication()
                            ?? throw new InvalidOperationException("Could not find Facebook App ID");
         options.ClientSecret = builder.Configuration["Authentication:Facebook:AppSecret"]
                                ?? throw new InvalidOperationException("Could not find Facebook App Secret");
+    })
+    .AddTwitter(options =>
+    {
+        options.ConsumerKey = builder.Configuration["Authentication:Twitter:ConsumerAPIKey"]
+                              ?? throw new InvalidOperationException("Could not find Twitter Consumer Key");
+        options.ConsumerSecret = builder.Configuration["Authentication:Twitter:ConsumerSecret"]
+                              ?? throw new InvalidOperationException("Could not find Twitter Consumer Secret");
     });
 
 var mvcBuilder = builder.Services.AddControllersWithViews();
