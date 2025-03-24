@@ -83,7 +83,10 @@ namespace S2_CA2.Controllers
                 return NotFound();
             }
 
-            var model = new BookVM(book, await GetAuthorsAsSelectList());
+            var model = new BookVM(book, await GetAuthorsAsSelectList())
+            {
+                AuthorId = book.Author.Id
+            };
 
             return View(model);
         }
