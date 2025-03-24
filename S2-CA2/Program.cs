@@ -31,6 +31,13 @@ builder.Services.AddAuthentication()
                            ?? throw new InvalidOperationException("Could not find Google Client ID");
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]
                                ?? throw new InvalidOperationException("Could not find Google Client Secret");
+    })
+    .AddFacebook(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Facebook:AppId"]
+                           ?? throw new InvalidOperationException("Could not find Facebook App ID");
+        options.ClientSecret = builder.Configuration["Authentication:Facebook:AppSecret"]
+                               ?? throw new InvalidOperationException("Could not find Facebook App Secret");
     });
 
 var mvcBuilder = builder.Services.AddControllersWithViews();
